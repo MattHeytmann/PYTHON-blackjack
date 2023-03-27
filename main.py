@@ -1,2 +1,2 @@
 # uz to funguje
-# ahojky svete
+# hello world
