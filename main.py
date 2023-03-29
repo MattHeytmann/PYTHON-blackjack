@@ -1,4 +1,5 @@
 from math import floor
+import random
 
 cards = [
     '2h',
@@ -56,7 +57,22 @@ cards = [
 ]
 
 def add_extra_card(deck):
-    last
-    print(deck[-floor(len(deck)/3):])
+    last_third_of_deck = deck[-15:-10]
 
-add_extra_card(cards)
+    print(last_third_of_deck)
+    print(deck[:-15], "--------")
+    print(deck[-10:], "********")
+
+    last_third_of_deck += ['XX']
+
+    random.shuffle(last_third_of_deck)
+
+    return deck[:-15] + last_third_of_deck + deck[-10:]
+
+print(len(add_extra_card(cards)))
+
+cards += 7 * cards
+
+def shuffle_cards():
+    random.shuffle(cards)
+    return cards
