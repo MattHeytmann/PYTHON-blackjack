@@ -66,7 +66,7 @@ print (shuffle_cards())
 
 def players_cards():
     player_hand.append(cards[:2])
-    cards.pop(cards[:2])
+    cards.pop(cards[0:2])
     dealer_hand = cards[2:4]
     dealer_hand.append(cards[2:4])
     cards.pop(cards[:2])
@@ -79,3 +79,8 @@ def allowed_bet_height(balance, bet):
     if balance < bet:
         return False
     return True
+
+def hit(): # should take another card from deck
+    player_hand.append(cards[0])
+    cards.pop(cards[0])
+    return player_hand
