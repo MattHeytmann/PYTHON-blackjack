@@ -1,3 +1,5 @@
+from math import floor
+
 cards = [
     '2h',
     '3h',
@@ -52,3 +54,9 @@ cards = [
     'kd',
     'ad',
 ]
+
+def add_extra_card(deck):
+    last
+    print(deck[-floor(len(deck)/3):])
+
+add_extra_card(cards)
