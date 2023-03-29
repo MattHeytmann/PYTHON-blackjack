@@ -1,7 +1,6 @@
 import random
-
-
-
+player_hand = []
+dealer_hand = []
 cards = [
     '2h',
     '3h',
@@ -64,10 +63,8 @@ def shuffle_cards():
 print (shuffle_cards())
 
 def players_cards():
-    player_hand = []
     player_hand.append(cards[:2])
     cards.pop(cards[:2])
-    dealer_hand = []
     dealer_hand = cards[2:4]
     dealer_hand.append(cards[2:4])
     cards.pop(cards[:2])
