@@ -1,3 +1,5 @@
+import random
+
 cards = [
     '2h',
     '3h',
@@ -52,3 +54,9 @@ cards = [
     'kd',
     'ad',
 ]
+cards += 7 * cards
+
+def shuffle_cards():
+    random.shuffle(cards)
+    return cards
+print (shuffle_cards())
