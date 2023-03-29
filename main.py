@@ -1,6 +1,7 @@
 from math import floor
 import random
-
+player_hand = []
+dealer_hand = []
 cards = [
     '2h',
     '3h',
@@ -76,3 +77,18 @@ cards += 7 * cards
 def shuffle_cards():
     random.shuffle(cards)
     return cards
+<<<<<<< HEAD
+=======
+print (shuffle_cards())
+
+def players_cards():
+    player_hand.append(cards[:2])
+    cards.pop(cards[:2])
+    dealer_hand = cards[2:4]
+    dealer_hand.append(cards[2:4])
+    cards.pop(cards[:2])
+    return player_hand, dealer_hand
+print (players_cards())
+
+# played_cards = []
+>>>>>>> 49164e7151348085228d6f7678a7cb865d240f4e
