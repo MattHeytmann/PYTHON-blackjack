@@ -1,6 +1,8 @@
 import random
 player_hand = []
 dealer_hand = []
+balance = 1000
+bet = input(int)
 cards = [
     '2h',
     '3h',
@@ -72,3 +74,8 @@ def players_cards():
 print (players_cards())
 
 # played_cards = []
+
+def allowed_bet_height(balance, bet):
+    if balance < bet:
+        return False
+    return True
