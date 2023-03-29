@@ -1,5 +1,7 @@
 import random
 
+
+
 cards = [
     '2h',
     '3h',
@@ -60,3 +62,9 @@ def shuffle_cards():
     random.shuffle(cards)
     return cards
 print (shuffle_cards())
+
+def players_cards():
+    player_cards = cards[:2]
+    dealer_cards = cards[2:4]
+    return player_cards, dealer_cards
+print (players_cards())
