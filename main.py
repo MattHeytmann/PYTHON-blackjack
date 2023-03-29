@@ -64,7 +64,14 @@ def shuffle_cards():
 print (shuffle_cards())
 
 def players_cards():
-    player_cards = cards[:2]
-    dealer_cards = cards[2:4]
-    return player_cards, dealer_cards
+    player_hand = []
+    player_hand.append(cards[:2])
+    cards.pop(cards[:2])
+    dealer_hand = []
+    dealer_hand = cards[2:4]
+    dealer_hand.append(cards[2:4])
+    cards.pop(cards[:2])
+    return player_hand, dealer_hand
 print (players_cards())
+
+# played_cards = []
