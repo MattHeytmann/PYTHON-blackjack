@@ -1,7 +1,8 @@
-from math import floor
 import random
 player_hand = []
 dealer_hand = []
+played_cards = []
+player_balance = 0
 cards = [
     '2h',
     '3h',
@@ -59,36 +60,62 @@ cards = [
 
 def add_extra_card(deck):
     last_third_of_deck = deck[-15:-10]
-
-    print(last_third_of_deck)
-    print(deck[:-15], "--------")
-    print(deck[-10:], "********")
-
     last_third_of_deck += ['XX']
 
     random.shuffle(last_third_of_deck)
 
     return deck[:-15] + last_third_of_deck + deck[-10:]
 
-print(len(add_extra_card(cards)))
-
 cards += 7 * cards
 
 def shuffle_cards():
     random.shuffle(cards)
+    add_extra_card(cards)
     return cards
-<<<<<<< HEAD
-=======
-print (shuffle_cards())
 
-def players_cards():
-    player_hand.append(cards[:2])
-    cards.pop(cards[:2])
-    dealer_hand = cards[2:4]
-    dealer_hand.append(cards[2:4])
-    cards.pop(cards[:2])
-    return player_hand, dealer_hand
-print (players_cards())
+# def players_cards():
 
-# played_cards = []
->>>>>>> 49164e7151348085228d6f7678a7cb865d240f4e
+#     global player_hand, dealer_hand
+
+#     player_hand.append(cards[:2])
+#     cards.pop(cards[:2])
+#     dealer_hand = cards[2:4]
+#     dealer_hand.append(cards[2:4])
+#     cards.pop(cards[:2])
+#     return player_hand, dealer_hand
+
+
+def start_round(cards, player, dealer):
+    player += cards[:2]
+    cards.pop(0)
+    cards.pop(0)
+
+    dealer += cards[:2]
+    cards.pop(0)
+    cards.pop(0)
+
+    return [player_hand, dealer_hand, cards]
+
+
+def hit(hand, deck):
+    hand += [deck.pop(0)]
+    return hand, deck
+
+
+def win(bet, percentage):
+    return bet + ((percentage / bet ) * 100)
+
+def calculate_value_of_cards(hand):
+    print(hand)
+
+
+def main():
+    global player_hand, dealer_hand, cards
+
+    # cards = shuffle_cards()
+    [player_hand, dealer_hand, cards] = start_round(cards, player_hand, dealer_hand)
+
+    hit(player_hand, cards)
+    calculate_value_of_cards(player_hand)
+
+main()
