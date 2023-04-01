@@ -107,12 +107,20 @@ def win(bet, percentage):
 
 def calculate_value_of_cards(hand):
     print(hand)
+    value = 0
+
+    for card in hand:
+        if card[0] == 'a' or card[0] == 'j' or card[0] == 'k' or card[0] == 'q' or card[0] == 'x':
+            value += 10
+        else:
+            value += int(card[0])
+        print(value)
 
 
 def main():
     global player_hand, dealer_hand, cards
 
-    # cards = shuffle_cards()
+    cards = shuffle_cards()
     [player_hand, dealer_hand, cards] = start_round(cards, player_hand, dealer_hand)
 
     hit(player_hand, cards)
