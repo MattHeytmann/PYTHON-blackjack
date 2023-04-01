@@ -73,6 +73,7 @@ def shuffle_cards():
     add_extra_card(cards)
     return cards
 
+<<<<<<< HEAD
 # def players_cards():
 
 #     global player_hand, dealer_hand
@@ -87,6 +88,10 @@ def shuffle_cards():
 
 def start_round(cards, player_hand, dealer_hand):
     player_hand += cards[:2]
+=======
+def start_round(cards, player, dealer):
+    player += cards[:2]
+>>>>>>> 69a052ebf621494527d37bdcc69a3a47da6a30d3
     cards.pop(0)
     cards.pop(0)
 
@@ -107,7 +112,24 @@ def win(bet, percentage):
 
 
 def calculate_value_of_cards(hand):
-    print(hand)
+
+    value = 0
+    nums_of_a = 0
+
+    for card in hand:
+        if card[0] == 'a':
+            nums_of_a += 1
+        elif card[0] == 'j' or card[0] == 'k' or card[0] == 'q' or card[0] == 'x':
+            value += 10
+        else:
+            value += int(card[0])
+    
+    for _ in range(nums_of_a):
+        if value + 11 + (nums_of_a - 1) <= 21:
+            value += 11
+        else:
+            value += 1
+    return(value)
 
 
 def double(bet):
@@ -124,6 +146,7 @@ def main():
     global player_hand, dealer_hand, cards
     game_ended = False
 
+<<<<<<< HEAD
     while game_ended == False:
         player_score = 0
         dealer_score = 0
@@ -137,4 +160,9 @@ def main():
 
     calculate_value_of_cards(player_hand)
 
+=======
+    cards = shuffle_cards()
+    [player_hand, dealer_hand, cards] = start_round(cards, player_hand, dealer_hand)
+
+>>>>>>> 69a052ebf621494527d37bdcc69a3a47da6a30d3
 main()
