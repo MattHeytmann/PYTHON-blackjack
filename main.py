@@ -85,12 +85,12 @@ def shuffle_cards():
 #     return player_hand, dealer_hand
 
 
-def start_round(cards, player, dealer):
-    player += cards[:2]
+def start_round(cards, player_hand, dealer_hand):
+    player_hand += cards[:2]
     cards.pop(0)
     cards.pop(0)
 
-    dealer += cards[:2]
+    dealer_hand += cards[:2]
     cards.pop(0)
     cards.pop(0)
 
@@ -105,17 +105,36 @@ def hit(hand, deck):
 def win(bet, percentage):
     return bet + ((percentage / bet ) * 100)
 
+
 def calculate_value_of_cards(hand):
     print(hand)
 
 
+def double(bet):
+    bet = 2 * bet
+    player_hand = hit (hand, deck)
+    game_over()
+
+
+def game_over():
+    quit
+
+
 def main():
     global player_hand, dealer_hand, cards
+    game_ended = False
 
-    # cards = shuffle_cards()
-    [player_hand, dealer_hand, cards] = start_round(cards, player_hand, dealer_hand)
+    while game_ended == False:
+        player_score = 0
+        dealer_score = 0
+        player_hand = []
+        dealer_hand = []
+        cards = shuffle_cards()
+        [player_hand, dealer_hand, cards] = start_round(cards, player_hand, dealer_hand)
+        hit(player_hand, cards)
+    
+    if not game_over:
 
-    hit(player_hand, cards)
     calculate_value_of_cards(player_hand)
 
 main()
