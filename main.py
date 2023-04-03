@@ -3,7 +3,7 @@ player_hand = []
 dealer_hand = []
 played_cards = []
 player_balance = 0
-cards = [
+all_cards = [
     '2h',
     '3h',
     '4h',
@@ -66,40 +66,23 @@ def add_extra_card(deck):
 
     return deck[:-15] + last_third_of_deck + deck[-10:]
 
-cards += 7 * cards
+all_cards += 7 * all_cards
 
-def shuffle_cards():
-    random.shuffle(cards)
-    add_extra_card(cards)
-    return cards
+def shuffle_cards(deck):
+    random.shuffle(deck)
+    add_extra_card(deck)
+    return deck
 
-<<<<<<< HEAD
-# def players_cards():
-
-#     global player_hand, dealer_hand
-
-#     player_hand.append(cards[:2])
-#     cards.pop(cards[:2])
-#     dealer_hand = cards[2:4]
-#     dealer_hand.append(cards[2:4])
-#     cards.pop(cards[:2])
-#     return player_hand, dealer_hand
-
-
-def start_round(cards, player_hand, dealer_hand):
-    player_hand += cards[:2]
-=======
 def start_round(cards, player, dealer):
     player += cards[:2]
->>>>>>> 69a052ebf621494527d37bdcc69a3a47da6a30d3
     cards.pop(0)
     cards.pop(0)
 
-    dealer_hand += cards[:2]
+    dealer += cards[:2]
     cards.pop(0)
     cards.pop(0)
 
-    return [player_hand, dealer_hand, cards]
+    return [cards, player, dealer]
 
 
 def hit(hand, deck):
@@ -132,37 +115,38 @@ def calculate_value_of_cards(hand):
     return(value)
 
 
-def double(bet):
+def double(bet, deck):
+    global player_hand
     bet = 2 * bet
-    player_hand = hit (hand, deck)
-    game_over()
+    hit(player_hand, deck)
+    round_over()
+    return bet
 
 
-def game_over():
-    quit
+
+def round_over():
+    print('round ended')
 
 
 def main():
-    global player_hand, dealer_hand, cards
+    global player_hand, dealer_hand, all_cards
     game_ended = False
 
-<<<<<<< HEAD
     while game_ended == False:
         player_score = 0
         dealer_score = 0
         player_hand = []
         dealer_hand = []
-        cards = shuffle_cards()
-        [player_hand, dealer_hand, cards] = start_round(cards, player_hand, dealer_hand)
-        hit(player_hand, cards)
-    
-    if not game_over:
+        cards = shuffle_cards(all_cards.copy())
+        [cards, player_hand, dealer_hand] = start_round(cards, player_hand, dealer_hand)
 
-    calculate_value_of_cards(player_hand)
+        while True:
+            input('')
 
-=======
+            if calculate_value_of_cards(played_cards) >= 21:
+                round_over()
+
     cards = shuffle_cards()
     [player_hand, dealer_hand, cards] = start_round(cards, player_hand, dealer_hand)
 
->>>>>>> 69a052ebf621494527d37bdcc69a3a47da6a30d3
 main()
