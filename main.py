@@ -1,6 +1,8 @@
 import random
 player_hand = []
 dealer_hand = []
+balance = 1000
+bet = input(int)
 played_cards = []
 player_balance = 0
 all_cards = [
@@ -62,6 +64,25 @@ def add_extra_card(deck):
     last_third_of_deck = deck[-15:-10]
     last_third_of_deck += ['XX']
 
+def players_cards():
+    player_hand.append(cards[:2])
+    cards.pop(cards[0:2])
+    dealer_hand = cards[2:4]
+    dealer_hand.append(cards[2:4])
+    cards.pop(cards[:2])
+    return player_hand, dealer_hand
+# print (all_cards)
+# played_cards = []
+
+def allowed_bet_height(balance, bet):
+    if balance < bet:
+        return False
+    return True
+
+def hit(): # should take another card from deck
+    player_hand.append(cards[0])
+    cards.pop(cards[0])
+    return player_hand
     random.shuffle(last_third_of_deck)
 
     return deck[:-15] + last_third_of_deck + deck[-10:]
@@ -141,7 +162,17 @@ def main():
         [cards, player_hand, dealer_hand] = start_round(cards, player_hand, dealer_hand)
 
         while True:
-            input('')
+            decision = input('')
+            if 'hit' == decision:
+                hit(player_hand, cards)
+                print (player_hand)
+
+            if 'double' == decision:
+                double(bet, cards)
+                print (player_hand)
+            
+            if 'pass' == decision:
+                pass
 
             if calculate_value_of_cards(played_cards) >= 21:
                 round_over()
