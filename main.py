@@ -71,8 +71,7 @@ def players_cards():
     dealer_hand.append(cards[2:4])
     cards.pop(cards[:2])
     return player_hand, dealer_hand
-print (players_cards())
-
+# print (all_cards)
 # played_cards = []
 
 def allowed_bet_height(balance, bet):
@@ -163,9 +162,17 @@ def main():
         [cards, player_hand, dealer_hand] = start_round(cards, player_hand, dealer_hand)
 
         while True:
-            if input == input(hit):
-                hit (hand, deck)
-            input('')
+            decision = input('')
+            if 'hit' == decision:
+                hit(player_hand, cards)
+                print (player_hand)
+
+            if 'double' == decision:
+                double(bet, cards)
+                print (player_hand)
+            
+            if 'pass' == decision:
+                pass
 
             if calculate_value_of_cards(played_cards) >= 21:
                 round_over()
