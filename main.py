@@ -1,3 +1,5 @@
+# 107 potřebuje opravit
+
 import random
 player_hand = []
 dealer_hand = []
@@ -72,22 +74,13 @@ def players_cards(cards):
     dealer_hand.append(cards[2:4])
     cards.pop(cards[:2])
     return player_hand, dealer_hand
-# print (all_cards)
-# played_cards = []
+
 
 def allowed_bet_height(balance, bet):
     if balance < bet:
         return False
     return True
 
-# def hit(deck, last_third_of_deck, cards): # should take another card from deck
-#     player_hand.append(cards[0])
-#     cards.pop(cards[0])
-#     random.shuffle(last_third_of_deck)
-
-#     return deck[:-15] + last_third_of_deck + deck[-10:], player_hand
-
-# hit(all_cards, )
 
 all_cards += 7 * all_cards
 
@@ -112,9 +105,10 @@ def hit(hand, deck):
     hand += [deck.pop(0)]
     return hand, deck
 
-
+# potřebuje opravit!!!
 def win(bet, percentage):
-    return bet + ((percentage / bet ) * 100)
+    return bet + (percentage * (bet / 100))
+# potřebuje opravit!!!
 
 
 def calculate_value_of_cards(hand):
@@ -136,14 +130,6 @@ def calculate_value_of_cards(hand):
         else:
             value += 1
     return(value)
-
-print(calculate_value_of_cards(['xc', 'qh', 'qh']))
-
-def double(bet, deck):
-    global player_hand
-    bet = 2 * bet
-    hit(player_hand, deck)
-    return bet
 
 def dealer_play(dealer_hand, deck):
     while calculate_value_of_cards(dealer_hand) < 16:
@@ -209,7 +195,9 @@ def main():
                 print (player_hand)
 
             if 'double' == decision:
-                bet = double(bet, cards)
+                balance -= bet
+                bet += bet
+                hit(player_hand, cards)
                 print (player_hand)
                 print(round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet))
 
