@@ -64,7 +64,7 @@ def add_extra_card(deck):
     last_third_of_deck = deck[-15:-10]
     last_third_of_deck += ['XX']
 
-def players_cards():
+def players_cards(cards):
     player_hand.append(cards[:2])
     cards.pop(cards[0:2])
     dealer_hand = cards[2:4]
@@ -79,13 +79,14 @@ def allowed_bet_height(balance, bet):
         return False
     return True
 
-def hit(): # should take another card from deck
-    player_hand.append(cards[0])
-    cards.pop(cards[0])
-    return player_hand
-    random.shuffle(last_third_of_deck)
+# def hit(deck, last_third_of_deck, cards): # should take another card from deck
+#     player_hand.append(cards[0])
+#     cards.pop(cards[0])
+#     random.shuffle(last_third_of_deck)
 
-    return deck[:-15] + last_third_of_deck + deck[-10:]
+#     return deck[:-15] + last_third_of_deck + deck[-10:], player_hand
+
+# hit(all_cards, )
 
 all_cards += 7 * all_cards
 
@@ -135,6 +136,7 @@ def calculate_value_of_cards(hand):
             value += 1
     return(value)
 
+print(calculate_value_of_cards(['xc', 'qh', 'qh']))
 
 def double(bet, deck):
     global player_hand
@@ -145,7 +147,15 @@ def double(bet, deck):
 
 
 
-def round_over():
+def round_over(player, dealer_hand):
+    
+    if "podminka":
+        return 
+    if "podminka":
+        return 
+    if "podminka":
+        return 
+    
     print('round ended')
 
 
@@ -161,6 +171,8 @@ def main():
         cards = shuffle_cards(all_cards.copy())
         [cards, player_hand, dealer_hand] = start_round(cards, player_hand, dealer_hand)
 
+        print("hra zacala")
+
         while True:
             decision = input('')
             if 'hit' == decision:
@@ -172,9 +184,9 @@ def main():
                 print (player_hand)
             
             if 'pass' == decision:
-                pass
+                round_over(calculate_value_of_cards(player_hand), dealer_hand)
 
-            if calculate_value_of_cards(played_cards) >= 21:
+            if calculate_value_of_cards(player_hand) >= 21:
                 round_over()
 
     cards = shuffle_cards()
