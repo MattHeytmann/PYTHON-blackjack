@@ -136,8 +136,6 @@ def calculate_value_of_cards(hand):
             value += 1
     return(value)
 
-print(calculate_value_of_cards(['xc', 'qh', 'qh']))
-
 def double(bet, deck):
     global player_hand
     bet = 2 * bet
@@ -146,10 +144,11 @@ def double(bet, deck):
     return bet
 
 
-def round_over(player, dealer_hand):
+def round_over(player_points, dealer_hand):
 
-    if "podminka":
-        return 
+    if player_points <= 21:
+        if player_points > calculate_value_of_cards (dealer_hand):
+            return 'player won'
     if "podminka":
         return 
     if "podminka":
