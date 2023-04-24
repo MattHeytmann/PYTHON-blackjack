@@ -146,9 +146,8 @@ def double(bet, deck):
     return bet
 
 
-
 def round_over(player, dealer_hand):
-    
+
     if "podminka":
         return 
     if "podminka":
