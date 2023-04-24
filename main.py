@@ -164,7 +164,7 @@ def preparation_round_over(player_points, dealer_hand, deck):
         return 'draw'
     
 def round_over(player_points, dealer_hand, deck, bet):
-    global round_running
+    global round_running, balance
     message = preparation_round_over(player_points, dealer_hand, deck)
     win_amount = 0
 
@@ -172,11 +172,16 @@ def round_over(player_points, dealer_hand, deck, bet):
 
     if message == 'win':
         win_amount = win(bet, 100)
-        return f'win {win_amount} | {player_hand} {dealer_hand}'
+        balance += win_amount
+        return f'win | {win_amount} {bet} {balance} | {player_hand} {dealer_hand}'
     if message == 'lost':
-        return f'lost | {player_hand} {dealer_hand}'
+        win_amount = win(bet, -100)
+        balance += win_amount
+        return f'lost | {win_amount} {bet} {balance} | {player_hand} {dealer_hand}'
     if message == 'draw':
-        return f'draw | {player_hand} {dealer_hand}'
+        win_amount = win(bet, 0)
+        balance += win_amount
+        return f'draw | {win_amount} {bet} {balance} | {player_hand} {dealer_hand}'
 
 def main():
     global player_hand, dealer_hand, all_cards, balance, round_running
@@ -196,7 +201,8 @@ def main():
 
         print(player_hand)
         bet = int(input(f'balance: {balance} | place your bet: '))
-        while True:
+        balance -= bet
+        while round_running:
             decision = input('')
             if 'hit' == decision:
                 hit(player_hand, cards)
