@@ -5,6 +5,7 @@ balance = 1000
 bet = input(int)
 played_cards = []
 player_balance = 0
+round_running = True
 all_cards = [
     '2h',
     '3h',
@@ -142,36 +143,59 @@ def double(bet, deck):
     global player_hand
     bet = 2 * bet
     hit(player_hand, deck)
-    round_over()
     return bet
 
+def dealer_play(dealer_hand, deck):
+    while calculate_value_of_cards(dealer_hand) < 16:
+        hit(dealer_hand, deck)
 
-def round_over(player, dealer_hand):
+    return dealer_hand
 
-    if "podminka":
-        return 
-    if "podminka":
-        return 
-    if "podminka":
-        return 
-    
+def preparation_round_over(player_points, dealer_hand, deck):
+    dealer_hand = dealer_play(dealer_hand, deck)
     print('round ended')
 
+    # hráč vyhraje pokud bude háč mít méně nebo rovno 21 a dealer bude mít v případě že má hráč méně nebo rovno 21 méně než hráč nebo více než 21
+    if (player_points <= 21 and calculate_value_of_cards(dealer_hand) < player_points) or (player_points <= 21 and calculate_value_of_cards(dealer_hand) > 21):
+        return 'win'
+    if player_points > 21 or (calculate_value_of_cards(dealer_hand) > player_points and calculate_value_of_cards(dealer_hand) <= 21):
+        return 'lost'
+    if player_points == calculate_value_of_cards(dealer_hand) and player_points <= 21:
+        return 'draw'
+    
+def round_over(player_points, dealer_hand, deck, bet):
+    global round_running
+    message = preparation_round_over(player_points, dealer_hand, deck)
+    win_amount = 0
+
+    round_running = False
+
+    if message == 'win':
+        win_amount = win(bet, 100)
+        return f'win {win_amount} | {player_hand} {dealer_hand}'
+    if message == 'lost':
+        return f'lost | {player_hand} {dealer_hand}'
+    if message == 'draw':
+        return f'draw | {player_hand} {dealer_hand}'
 
 def main():
-    global player_hand, dealer_hand, all_cards
+    global player_hand, dealer_hand, all_cards, balance, round_running
     game_ended = False
 
     while game_ended == False:
-        player_score = 0
-        dealer_score = 0
+
         player_hand = []
         dealer_hand = []
+        bet = 0
         cards = shuffle_cards(all_cards.copy())
         [cards, player_hand, dealer_hand] = start_round(cards, player_hand, dealer_hand)
 
+        round_running = True
+
         print("hra zacala")
 
+        print(player_hand)
+        bet = int(input(f'balance: {balance} | place your bet: '))
         while True:
             decision = input('')
             if 'hit' == decision:
@@ -179,14 +203,16 @@ def main():
                 print (player_hand)
 
             if 'double' == decision:
-                double(bet, cards)
+                bet = double(bet, cards)
                 print (player_hand)
+                print(round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet))
+
             
             if 'pass' == decision:
-                round_over(calculate_value_of_cards(player_hand), dealer_hand)
+                print(round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet))
 
-            if calculate_value_of_cards(player_hand) >= 21:
-                round_over()
+            if calculate_value_of_cards(player_hand) > 21:
+                print(round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet))
 
     cards = shuffle_cards()
     [player_hand, dealer_hand, cards] = start_round(cards, player_hand, dealer_hand)
