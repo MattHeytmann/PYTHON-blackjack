@@ -1,6 +1,16 @@
-# 107 potřebuje opravit
+import pygame, sys, random
 
-import random
+TILE_SIZE = 80
+WINDOW_WIDTH = 640
+WINDOW_HEIGHT = 480
+FPS = 30
+BLANK = None
+
+FPS_CLOCK = None
+DISPLAY_SURFACE = None
+BASIC_FONT = None
+BUTTONS = None
+
 player_hand = []
 dealer_hand = []
 balance = 1000
@@ -105,10 +115,9 @@ def hit(hand, deck):
     hand += [deck.pop(0)]
     return hand, deck
 
-# potřebuje opravit!!!
+
 def win(bet, percentage):
     return bet + (percentage * (bet / 100))
-# potřebuje opravit!!!
 
 
 def calculate_value_of_cards(hand):
@@ -170,7 +179,11 @@ def round_over(player_points, dealer_hand, deck, bet):
         return f'draw | {win_amount} {bet} {balance} | {player_hand} {dealer_hand}'
 
 def main():
-    global player_hand, dealer_hand, all_cards, balance, round_running
+    global FPSCLOCK, DISPLAY_SURFACE, WINDOW_WIDTH, WINDOW_HEIGHT, player_hand, dealer_hand, all_cards, balance, round_running
+    pygame.init()
+    FPSCLOCK = pygame.time.Clock()
+    DISPLAY_SURFACE = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+    pygame.display.set_caption('Blackjack')
     game_ended = False
 
     while game_ended == False:
@@ -185,8 +198,8 @@ def main():
 
         print("hra zacala")
 
-        print(player_hand)
         bet = int(input(f'balance: {balance} | place your bet: '))
+        print(player_hand)
         balance -= bet
         while round_running:
             decision = input('')
