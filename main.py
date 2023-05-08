@@ -1,4 +1,5 @@
 import pygame, sys, random
+from pygame.locals import *
 
 TILE_SIZE = 80
 WINDOW_WIDTH = 640
