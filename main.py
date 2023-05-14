@@ -6,7 +6,7 @@ WINDOW_WIDTH = 1600
 WINDOW_HEIGHT = 900
 FPS = 30
 BASIC_FONT_SIZE = 20
-CARD_SIZE = 100
+CARD_SIZE = 300
 BLANK = None
 
 FPS_CLOCK = None
@@ -265,22 +265,28 @@ def main():
         draw_image(DISPLAY_SURFACE, './img/Other/Background.png', 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT)
         draw_image(DISPLAY_SURFACE, './img/Other/Bar.png', 0, WINDOW_HEIGHT - 220, WINDOW_WIDTH, 220)
 
-        draw_image(DISPLAY_SURFACE, './img/Other/elipse.png', WINDOW_WIDTH - 50, WINDOW_HEIGHT - 220, 50, 50)
-        draw_image(DISPLAY_SURFACE, './img/Other/elipse.png', 0, WINDOW_HEIGHT - 220, WINDOW_WIDTH, 220)
-        draw_image(DISPLAY_SURFACE, './img/Other/elipse.png', 0, WINDOW_HEIGHT - 220, WINDOW_WIDTH, 220)
-        draw_image(DISPLAY_SURFACE, './img/Other/elipse.png', 0, WINDOW_HEIGHT - 220, WINDOW_WIDTH, 220)
-        draw_image(DISPLAY_SURFACE, './img/Other/elipse.png', 0, WINDOW_HEIGHT - 220, WINDOW_WIDTH, 220)
-        draw_image(DISPLAY_SURFACE, './img/Other/elipse.png', 0, WINDOW_HEIGHT - 220, WINDOW_WIDTH, 220)
-
         draw_image(DISPLAY_SURFACE, button_double.image_path, button_double.rect.x, button_double.rect.y, button_double.rect.width, button_double.rect.height)
         draw_image(DISPLAY_SURFACE, button_hit.image_path, button_hit.rect.x, button_hit.rect.y, button_hit.rect.width, button_hit.rect.height)
         draw_image(DISPLAY_SURFACE, button_stand.image_path, button_stand.rect.x, button_stand.rect.y, button_stand.rect.width, button_stand.rect.height)
         
-        display_card(DISPLAY_SURFACE, 'KC', 0, 0)
-        display_card(DISPLAY_SURFACE, 'KH', 50, 50)
-        display_card(DISPLAY_SURFACE, 'KD', 100, 100)
+        for i, card in enumerate(dealer_hand):
+            card = card.upper()
+            display_card(DISPLAY_SURFACE, card, 427.01, 61.77)
+        for i, card in enumerate(dealer_hand):
+            card = card.upper()
+            display_card(DISPLAY_SURFACE, card, 427.01 + (i * 30), 61.77 + (i * 30))
 
-        display_text(BASIC_FONT, 'Balence: ' + str(balance), 50, WINDOW_HEIGHT - 38)
+        for i, card in enumerate(player_hand):
+            card = card.upper()
+            display_card(DISPLAY_SURFACE, card, 800.64, 391.21)
+        for i, card in enumerate(player_hand):
+            card = card.upper()
+            display_card(DISPLAY_SURFACE, card, 800.64 + (i * 30), 391.21 + (i * 30))
+        
+        draw_image(DISPLAY_SURFACE, './img/Balls/' + str(calculate_value_of_cards(dealer_hand)) + '.png', 788.5, 149, 132, 132)
+        draw_image(DISPLAY_SURFACE, './img/Balls/' + str(calculate_value_of_cards(player_hand)) + '.png', 406.63, 478.21, 132, 132)
+
+        display_text(BASIC_FONT, 'Balance: ' + str(balance), 50, WINDOW_HEIGHT - 38)
         display_text(BASIC_FONT, 'Bet:' + str(bet), WINDOW_WIDTH - 280, WINDOW_HEIGHT - 38)
 
         # print("hra zacala")
