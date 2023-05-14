@@ -275,6 +275,14 @@ def main():
             global balance
             balance -= 500
             return 500
+        def reset():
+            global balance
+            balance -= 500
+            return 500
+        def start():
+            global balance
+            balance -= 500
+            return 500
 
         button_double = Button('./img/Other/Double.png', (WINDOW_WIDTH // 2) - 68, WINDOW_HEIGHT - 150, 130, 130, double)
         button_hit = Button('./img/Other/hit.png', (WINDOW_WIDTH // 2) - 283, WINDOW_HEIGHT - 78, 203, 77, hit)
@@ -286,6 +294,9 @@ def main():
         button_chip_100 = Button('./img/Other/100.png', WINDOW_WIDTH - 150, WINDOW_HEIGHT - 320, 110, 110, btn_chip_100)
         button_chip_200 = Button('./img/Other/200.png', WINDOW_WIDTH - 270, WINDOW_HEIGHT - 440, 110, 110, btn_chip_200)
         button_chip_500 = Button('./img/Other/500.png', WINDOW_WIDTH - 150, WINDOW_HEIGHT - 440, 110, 110, btn_chip_500)
+
+        button_reset = Button('./img/Other/reset.png', WINDOW_WIDTH - 150, WINDOW_HEIGHT - 500, 203, 77, reset)
+        button_start = Button('./img/Other/Start.png', WINDOW_WIDTH - 150, WINDOW_HEIGHT - 800, 203, 77, start)
 
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
@@ -344,11 +355,13 @@ def main():
         draw_image(DISPLAY_SURFACE, button_chip_100.image_path, button_chip_100.rect.x, button_chip_100.rect.y, button_chip_100.rect.width, button_chip_100.rect.height)
         draw_image(DISPLAY_SURFACE, button_chip_200.image_path, button_chip_200.rect.x, button_chip_200.rect.y, button_chip_200.rect.width, button_chip_200.rect.height)
         draw_image(DISPLAY_SURFACE, button_chip_500.image_path, button_chip_500.rect.x, button_chip_500.rect.y, button_chip_500.rect.width, button_chip_500.rect.height)
+        draw_image(DISPLAY_SURFACE, button_start.image_path, button_start.rect.x, button_start.rect.y, button_start.rect.width, button_start.rect.height)
+        draw_image(DISPLAY_SURFACE, button_reset.image_path, button_reset.rect.x, button_reset.rect.y, button_reset.rect.width, button_reset.rect.height)
         
 
         display_text(BASIC_FONT, 'Balance: ' + str(balance) + '€', 50, WINDOW_HEIGHT - 38)
         display_text(BASIC_FONT, 'Bet:' + str(bet) + '€', WINDOW_WIDTH - 280, WINDOW_HEIGHT - 38)
-        
+
         for i, card in enumerate(dealer_hand):
             card = card.upper()
             display_card(DISPLAY_SURFACE, card, 427.01, 61.77)
