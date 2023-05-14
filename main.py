@@ -1,3 +1,6 @@
+
+import math
+import time
 import pygame, sys, random
 from pygame.locals import *
 
@@ -16,8 +19,8 @@ BUTTONS = None
 
 player_hand = []
 dealer_hand = []
-balance = 1000
-bet = input(int)
+balance = 1000.0
+bet = 0
 played_cards = []
 player_balance = 0
 round_running = True
@@ -114,7 +117,7 @@ def display_card(screen, card, x, y):
     elif suit == 'S':
         draw_image(screen, path + 'Spades/' + card + '.png', x, y, CARD_SIZE * 0.7, CARD_SIZE )
     else:
-        pass
+        draw_image(screen, './img/Other/card_back.png', x, y, CARD_SIZE * 0.7, CARD_SIZE )
 
 def display_text(font, text, x, y):
     text_surface = font.render(text, True, (0, 0, 0))
@@ -184,22 +187,21 @@ def calculate_value_of_cards(hand):
     return(value)
 
 def dealer_play(dealer_hand, deck):
-    while calculate_value_of_cards(dealer_hand) < 16:
+    while calculate_value_of_cards(dealer_hand) < 17:
         hit(dealer_hand, deck)
 
     return dealer_hand
 
 def preparation_round_over(player_points, dealer_hand, deck):
     dealer_hand = dealer_play(dealer_hand, deck)
-    print('round ended')
 
     # hráč vyhraje pokud bude háč mít méně nebo rovno 21 a dealer bude mít v případě že má hráč méně nebo rovno 21 méně než hráč nebo více než 21
     if (player_points <= 21 and calculate_value_of_cards(dealer_hand) < player_points) or (player_points <= 21 and calculate_value_of_cards(dealer_hand) > 21):
         return 'win'
     if player_points > 21 or (calculate_value_of_cards(dealer_hand) > player_points and calculate_value_of_cards(dealer_hand) <= 21):
-        return 'lost'
+        return 'lose'
     if player_points == calculate_value_of_cards(dealer_hand) and player_points <= 21:
-        return 'draw'
+        return 'push'
     
 def round_over(player_points, dealer_hand, deck, bet):
     global round_running, balance
@@ -208,21 +210,10 @@ def round_over(player_points, dealer_hand, deck, bet):
 
     round_running = False
 
-    if message == 'win':
-        win_amount = win(bet, 100)
-        balance += win_amount
-        return f'win | {win_amount} {bet} {balance} | {player_hand} {dealer_hand}'
-    if message == 'lost':
-        win_amount = win(bet, -100)
-        balance += win_amount
-        return f'lost | {win_amount} {bet} {balance} | {player_hand} {dealer_hand}'
-    if message == 'draw':
-        win_amount = win(bet, 0)
-        balance += win_amount
-        return f'draw | {win_amount} {bet} {balance} | {player_hand} {dealer_hand}'
+    return message
 
 def main():
-    global FPS_CLOCK, DISPLAY_SURFACE, WINDOW_WIDTH, WINDOW_HEIGHT, player_hand, dealer_hand, all_cards, balance, round_running
+    global FPS_CLOCK, DISPLAY_SURFACE, WINDOW_WIDTH, WINDOW_HEIGHT, player_hand, dealer_hand, all_cards, balance, round_running, bet
 
     pygame.init()
     FPS_CLOCK = pygame.time.Clock()
@@ -239,18 +230,18 @@ def main():
         pygame.quit()
         sys.exit()
 
-    bet = 0
-
     while game_ended == False:
         pygame.display.update()
         FPS_CLOCK.tick(FPS)
 
-        def double():
-            print('double')
-        def hit():
-            print('hit')
-        def stand():
-            print('stand')
+        round_running = True
+
+        def btn_double():
+            return 1
+        def btn_hit():
+            return 2
+        def btn_stand():
+            return 3
         def btn_chip_10():
             global balance
             balance -= 10
@@ -280,14 +271,11 @@ def main():
             balance += bet
             return 0
         def start():
-            print('start')
-            # global balance
-            # balance -= 500
-            # return 500
+            player_turn()
 
-        button_double = Button('./img/Other/Double.png', (WINDOW_WIDTH // 2) - 68, WINDOW_HEIGHT - 150, 130, 130, double)
-        button_hit = Button('./img/Other/hit.png', (WINDOW_WIDTH // 2) - 283, WINDOW_HEIGHT - 78, 203, 77, hit)
-        button_stand = Button('./img/Other/stand.png', (WINDOW_WIDTH / 2) + 80, WINDOW_HEIGHT - 78, 203, 77, stand)
+        button_double = Button('./img/Other/Double.png', (WINDOW_WIDTH // 2) - 68, WINDOW_HEIGHT - 150, 130, 130, btn_double)
+        button_hit = Button('./img/Other/hit.png', (WINDOW_WIDTH // 2) - 283, WINDOW_HEIGHT - 78, 203, 77, btn_hit)
+        button_stand = Button('./img/Other/stand.png', (WINDOW_WIDTH / 2) + 80, WINDOW_HEIGHT - 78, 203, 77, btn_stand)
 
         button_chip_10 = Button('./img/Other/10.png', WINDOW_WIDTH - 270, WINDOW_HEIGHT - 250, 110, 110, btn_chip_10)
         button_chip_20 = Button('./img/Other/20.png', WINDOW_WIDTH - 150, WINDOW_HEIGHT - 250, 110, 110, btn_chip_20)
@@ -303,9 +291,6 @@ def main():
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 terminate()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                button_double.handle_event()
-                button_hit.handle_event()
-                button_stand.handle_event()
                 try:
                     curr_bet = bet
                     bet = button_reset.handle_event()
@@ -314,8 +299,8 @@ def main():
                 except (UnboundLocalError, TypeError):
                     pass
                 try:
-                    if bet > 0 :
-                        button_start.handle_event()
+                    if bet > 0 and button_start.handle_event():
+                        bet = 0
                 except (UnboundLocalError, TypeError):
                     pass
                 try:
@@ -354,7 +339,104 @@ def main():
         cards = shuffle_cards(all_cards.copy())
         [cards, player_hand, dealer_hand] = start_round(cards, player_hand, dealer_hand)
 
-        round_running = True
+        
+
+        def player_turn():
+            global balance, bet
+
+            while round_running and calculate_value_of_cards(player_hand) <= 21:
+
+                button_double = Button('./img/Other/Double.png', (WINDOW_WIDTH // 2) - 68, WINDOW_HEIGHT - 150, 130, 130, btn_double)
+                button_hit = Button('./img/Other/hit.png', (WINDOW_WIDTH // 2) - 283, WINDOW_HEIGHT - 78, 203, 77, btn_hit)
+                button_stand = Button('./img/Other/stand.png', (WINDOW_WIDTH / 2) + 80, WINDOW_HEIGHT - 78, 203, 77, btn_stand)
+                # Display player's current hand and dealer's face-up card
+                # Prompt the player to choose an action (hit or stand)
+                for event in pygame.event.get():
+                    if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
+                        terminate()
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if event.button == 1:  # Check if the left mouse button was clicked
+                            if button_double.handle_event() and len(player_hand) <= 2:
+                                balance -= bet
+                                bet = bet * 2
+                                hit(player_hand, cards)
+                                round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet)
+                            if button_hit.handle_event():
+                                hit(player_hand, cards)
+                            if button_stand.handle_event():
+                                round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet)
+                            # Check if the hit button was clicked
+                            # If yes, call the hit function to add a card to the player's hand
+                            # Check if the stand button was clicked
+                            # If yes, end the player's turn
+
+                # Update the display and wait for the next event
+                for i, card in enumerate(dealer_hand):
+                    card = card.upper()
+                    display_card(DISPLAY_SURFACE, card, 427.01, 61.77)
+                for i, card in enumerate(dealer_hand):
+                    card = card.upper()
+                    if i == 0:
+                        display_card(DISPLAY_SURFACE, 'XX', 427.01 + (i * 60), 61.77 + (i * 30))
+                    else:
+                        display_card(DISPLAY_SURFACE, card, 427.01 + (i * 60), 61.77 + (i * 30))
+
+                for i, card in enumerate(player_hand):
+                    card = card.upper()
+                    display_card(DISPLAY_SURFACE, card, 800.64, 391.21)
+                for i, card in enumerate(player_hand):
+                    card = card.upper()
+                    display_card(DISPLAY_SURFACE, card, 800.64 + (i * 60), 391.21 + (i * 30))
+                
+                draw_image(DISPLAY_SURFACE, './img/Balls/' + str(calculate_value_of_cards(dealer_hand) - calculate_value_of_cards([dealer_hand[0]])) + '.png', 788.5, 149, 132, 132)
+                draw_image(DISPLAY_SURFACE, './img/Balls/' + str(calculate_value_of_cards(player_hand)) + '.png', 406.63, 478.21, 132, 132)
+                pygame.display.update()
+                FPS_CLOCK.tick(FPS)
+            time.sleep(1)
+            
+            btn_exit = True
+            while btn_exit:
+
+                
+                button_exit = Button(f'./img/Other/{round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet)}.png', 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, btn_double)
+                # Display player's current hand and dealer's face-up card
+                # Prompt the player to choose an action (hit or stand)
+                for event in pygame.event.get():
+                    if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
+                        terminate()
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if event.button == 1:  # Check if the left mouse button was clicked
+                            if button_exit.handle_event():
+                                btn_exit = False
+
+                for i, card in enumerate(dealer_hand):
+                    card = card.upper()
+                    display_card(DISPLAY_SURFACE, card, 427.01, 61.77)
+                for i, card in enumerate(dealer_hand):
+                    card = card.upper()
+                    display_card(DISPLAY_SURFACE, card, 427.01 + (i * 60), 61.77 + (i * 30))
+
+                for i, card in enumerate(player_hand):
+                    card = card.upper()
+                    display_card(DISPLAY_SURFACE, card, 800.64, 391.21)
+                for i, card in enumerate(player_hand):
+                    card = card.upper()
+                    display_card(DISPLAY_SURFACE, card, 800.64 + (i * 60), 391.21 + (i * 30))
+                
+                draw_image(DISPLAY_SURFACE, './img/Balls/' + str(calculate_value_of_cards(dealer_hand)) + '.png', 788.5, 149, 132, 132)
+                draw_image(DISPLAY_SURFACE, button_exit.image_path, button_exit.rect.x, button_exit.rect.y, button_exit.rect.width, button_exit.rect.height)
+                draw_image(DISPLAY_SURFACE, './img/Balls/' + str(calculate_value_of_cards(player_hand)) + '.png', 406.63, 478.21, 132, 132)
+                pygame.display.update()
+                FPS_CLOCK.tick(FPS)
+
+            message = round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet)
+            if message == 'win':
+                balance += win(bet, 0)
+            if message == 'lose':
+                balance -= win(bet, 0)
+            if message == 'push':
+                pass
+        
 
         draw_image(DISPLAY_SURFACE, './img/Other/Background.png', 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT)
         draw_image(DISPLAY_SURFACE, './img/Other/Bar.png', 0, WINDOW_HEIGHT - 220, WINDOW_WIDTH, 220)
@@ -372,59 +454,8 @@ def main():
             draw_image(DISPLAY_SURFACE, button_start.image_path, button_start.rect.x, button_start.rect.y, button_start.rect.width, button_start.rect.height)
         draw_image(DISPLAY_SURFACE, button_reset.image_path, button_reset.rect.x, button_reset.rect.y, button_reset.rect.width, button_reset.rect.height)
         
+        win_amount = str(math.floor(bet))
 
         display_text(BASIC_FONT, 'Balance: ' + str(balance) + '€', 50, WINDOW_HEIGHT - 38)
-        display_text(BASIC_FONT, 'Bet:' + str(bet) + '€', WINDOW_WIDTH - 280, WINDOW_HEIGHT - 38)
-
-        for i, card in enumerate(dealer_hand):
-            card = card.upper()
-            display_card(DISPLAY_SURFACE, card, 427.01, 61.77)
-        for i, card in enumerate(dealer_hand):
-            card = card.upper()
-            display_card(DISPLAY_SURFACE, card, 427.01 + (i * 60), 61.77 + (i * 30))
-
-        for i, card in enumerate(player_hand):
-            card = card.upper()
-            display_card(DISPLAY_SURFACE, card, 800.64, 391.21)
-        for i, card in enumerate(player_hand):
-            card = card.upper()
-            display_card(DISPLAY_SURFACE, card, 800.64 + (i * 60), 391.21 + (i * 30))
-        
-        draw_image(DISPLAY_SURFACE, './img/Balls/' + str(calculate_value_of_cards(dealer_hand)) + '.png', 788.5, 149, 132, 132)
-        draw_image(DISPLAY_SURFACE, './img/Balls/' + str(calculate_value_of_cards(player_hand)) + '.png', 406.63, 478.21, 132, 132)
-
-        display_text(BASIC_FONT, 'Balance: ' + str(balance), 50, WINDOW_HEIGHT - 38)
-        display_text(BASIC_FONT, 'Bet:' + str(bet), WINDOW_WIDTH - 280, WINDOW_HEIGHT - 38)
-
-        # print("hra zacala")
-
-        # bet = int(input(f'balance: {balance} | place your bet: '))
-        # print(player_hand)
-        # balance -= bet
-        # while round_running:
-
-
-            
-    #         decision = input('')
-    #         if 'hit' == decision:
-    #             hit(player_hand, cards)
-    #             print (player_hand)
-
-    #         if 'double' == decision:
-    #             balance -= bet
-    #             bet += bet
-    #             hit(player_hand, cards)
-    #             print (player_hand)
-    #             print(round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet))
-
-            
-    #         if 'pass' == decision:
-    #             print(round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet))
-
-    #         if calculate_value_of_cards(player_hand) > 21:
-    #             print(round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet))
-
-    # cards = shuffle_cards()
-    # [player_hand, dealer_hand, cards] = start_round(cards, player_hand, dealer_hand)
-
+        display_text(BASIC_FONT, 'Bet:' + win_amount + '€', WINDOW_WIDTH - 280, WINDOW_HEIGHT - 38)
 main()
