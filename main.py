@@ -288,15 +288,15 @@ def main():
         button_hit = Button('./img/Other/hit.png', (WINDOW_WIDTH // 2) - 283, WINDOW_HEIGHT - 78, 203, 77, hit)
         button_stand = Button('./img/Other/stand.png', (WINDOW_WIDTH / 2) + 80, WINDOW_HEIGHT - 78, 203, 77, stand)
 
-        button_chip_10 = Button('./img/Other/10.png', WINDOW_WIDTH - 270, WINDOW_HEIGHT - 200, 110, 110, btn_chip_10)
-        button_chip_20 = Button('./img/Other/20.png', WINDOW_WIDTH - 150, WINDOW_HEIGHT - 200, 110, 110, btn_chip_20)
-        button_chip_50 = Button('./img/Other/50.png', WINDOW_WIDTH - 270, WINDOW_HEIGHT - 320, 110, 110, btn_chip_50)
-        button_chip_100 = Button('./img/Other/100.png', WINDOW_WIDTH - 150, WINDOW_HEIGHT - 320, 110, 110, btn_chip_100)
-        button_chip_200 = Button('./img/Other/200.png', WINDOW_WIDTH - 270, WINDOW_HEIGHT - 440, 110, 110, btn_chip_200)
-        button_chip_500 = Button('./img/Other/500.png', WINDOW_WIDTH - 150, WINDOW_HEIGHT - 440, 110, 110, btn_chip_500)
+        button_chip_10 = Button('./img/Other/10.png', WINDOW_WIDTH - 270, WINDOW_HEIGHT - 250, 110, 110, btn_chip_10)
+        button_chip_20 = Button('./img/Other/20.png', WINDOW_WIDTH - 150, WINDOW_HEIGHT - 250, 110, 110, btn_chip_20)
+        button_chip_50 = Button('./img/Other/50.png', WINDOW_WIDTH - 270, WINDOW_HEIGHT - 370, 110, 110, btn_chip_50)
+        button_chip_100 = Button('./img/Other/100.png', WINDOW_WIDTH - 150, WINDOW_HEIGHT - 370, 110, 110, btn_chip_100)
+        button_chip_200 = Button('./img/Other/200.png', WINDOW_WIDTH - 270, WINDOW_HEIGHT - 490, 110, 110, btn_chip_200)
+        button_chip_500 = Button('./img/Other/500.png', WINDOW_WIDTH - 150, WINDOW_HEIGHT - 490, 110, 110, btn_chip_500)
 
-        button_reset = Button('./img/Other/reset.png', WINDOW_WIDTH - 150, WINDOW_HEIGHT - 500, 203, 77, reset)
-        button_start = Button('./img/Other/Start.png', WINDOW_WIDTH - 150, WINDOW_HEIGHT - 800, 203, 77, start)
+        button_reset = Button('./img/Other/reset.png', WINDOW_WIDTH - 250, WINDOW_HEIGHT - 130, 203, 77, reset)
+        button_start = Button('./img/Other/Start.png', WINDOW_WIDTH - 250, WINDOW_HEIGHT - 560, 203, 77, start)
 
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
@@ -367,14 +367,14 @@ def main():
             display_card(DISPLAY_SURFACE, card, 427.01, 61.77)
         for i, card in enumerate(dealer_hand):
             card = card.upper()
-            display_card(DISPLAY_SURFACE, card, 427.01 + (i * 30), 61.77 + (i * 30))
+            display_card(DISPLAY_SURFACE, card, 427.01 + (i * 60), 61.77 + (i * 30))
 
         for i, card in enumerate(player_hand):
             card = card.upper()
             display_card(DISPLAY_SURFACE, card, 800.64, 391.21)
         for i, card in enumerate(player_hand):
             card = card.upper()
-            display_card(DISPLAY_SURFACE, card, 800.64 + (i * 30), 391.21 + (i * 30))
+            display_card(DISPLAY_SURFACE, card, 800.64 + (i * 60), 391.21 + (i * 30))
         
         draw_image(DISPLAY_SURFACE, './img/Balls/' + str(calculate_value_of_cards(dealer_hand)) + '.png', 788.5, 149, 132, 132)
         draw_image(DISPLAY_SURFACE, './img/Balls/' + str(calculate_value_of_cards(player_hand)) + '.png', 406.63, 478.21, 132, 132)
