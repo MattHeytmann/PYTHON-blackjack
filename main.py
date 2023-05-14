@@ -277,12 +277,13 @@ def main():
             return 500
         def reset():
             global balance
-            balance -= 500
-            return 500
+            balance += bet
+            return 0
         def start():
-            global balance
-            balance -= 500
-            return 500
+            print('start')
+            # global balance
+            # balance -= 500
+            # return 500
 
         button_double = Button('./img/Other/Double.png', (WINDOW_WIDTH // 2) - 68, WINDOW_HEIGHT - 150, 130, 130, double)
         button_hit = Button('./img/Other/hit.png', (WINDOW_WIDTH // 2) - 283, WINDOW_HEIGHT - 78, 203, 77, hit)
@@ -305,6 +306,18 @@ def main():
                 button_double.handle_event()
                 button_hit.handle_event()
                 button_stand.handle_event()
+                try:
+                    curr_bet = bet
+                    bet = button_reset.handle_event()
+                    if bet == None:
+                        bet = curr_bet
+                except (UnboundLocalError, TypeError):
+                    pass
+                try:
+                    if bet > 0 :
+                        button_start.handle_event()
+                except (UnboundLocalError, TypeError):
+                    pass
                 try:
                     if balance - 10 >= 0:
                         bet += button_chip_10.handle_event()
@@ -355,7 +368,8 @@ def main():
         draw_image(DISPLAY_SURFACE, button_chip_100.image_path, button_chip_100.rect.x, button_chip_100.rect.y, button_chip_100.rect.width, button_chip_100.rect.height)
         draw_image(DISPLAY_SURFACE, button_chip_200.image_path, button_chip_200.rect.x, button_chip_200.rect.y, button_chip_200.rect.width, button_chip_200.rect.height)
         draw_image(DISPLAY_SURFACE, button_chip_500.image_path, button_chip_500.rect.x, button_chip_500.rect.y, button_chip_500.rect.width, button_chip_500.rect.height)
-        draw_image(DISPLAY_SURFACE, button_start.image_path, button_start.rect.x, button_start.rect.y, button_start.rect.width, button_start.rect.height)
+        if bet > 0 :
+            draw_image(DISPLAY_SURFACE, button_start.image_path, button_start.rect.x, button_start.rect.y, button_start.rect.width, button_start.rect.height)
         draw_image(DISPLAY_SURFACE, button_reset.image_path, button_reset.rect.x, button_reset.rect.y, button_reset.rect.width, button_reset.rect.height)
         
 
