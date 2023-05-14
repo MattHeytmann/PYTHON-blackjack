@@ -1,9 +1,12 @@
 import pygame, sys, random
+from pygame.locals import *
 
 TILE_SIZE = 80
 WINDOW_WIDTH = 640
 WINDOW_HEIGHT = 480
-FPS = 30
+FPS = 2
+BASIC_FONT_SIZE = 20
+CARD_SIZE = 100
 BLANK = None
 
 FPS_CLOCK = None
@@ -76,6 +79,29 @@ all_cards = [
 def add_extra_card(deck):
     last_third_of_deck = deck[-15:-10]
     last_third_of_deck += ['XX']
+
+def draw_image(screen, image, x, y, img_width, img_height):
+    image = pygame.image.load(f"{image}")
+    image = pygame.transform.scale(image, (img_width, img_height))
+    screen.blit(image, (x, y))
+    pygame.display.update()
+
+def display_card(screen, card, x, y):
+    global CARD_SIZE
+
+    path = './img/Cards/'
+    suit = card[1]
+
+    if suit == 'C':
+        draw_image(screen, path + 'Clubs/' + card + '.png', x, y, CARD_SIZE * 0.7, CARD_SIZE )
+    elif suit == 'D':
+        draw_image(screen, path + 'Diamonds/' + card + '.png', x, y, CARD_SIZE * 0.7, CARD_SIZE )
+    elif suit == 'H':
+        draw_image(screen, path + 'Hearts/' + card + '.png', x, y, CARD_SIZE * 0.7, CARD_SIZE )
+    elif suit == 'S':
+        draw_image(screen, path + 'Spades/' + card + '.png', x, y, CARD_SIZE * 0.7, CARD_SIZE )
+    else:
+        pass
 
 def players_cards(cards):
     player_hand.append(cards[:2])
@@ -179,14 +205,30 @@ def round_over(player_points, dealer_hand, deck, bet):
         return f'draw | {win_amount} {bet} {balance} | {player_hand} {dealer_hand}'
 
 def main():
-    global FPSCLOCK, DISPLAY_SURFACE, WINDOW_WIDTH, WINDOW_HEIGHT, player_hand, dealer_hand, all_cards, balance, round_running
+    global FPS_CLOCK, DISPLAY_SURFACE, WINDOW_WIDTH, WINDOW_HEIGHT, player_hand, dealer_hand, all_cards, balance, round_running
+
     pygame.init()
-    FPSCLOCK = pygame.time.Clock()
+    FPS_CLOCK = pygame.time.Clock()
     DISPLAY_SURFACE = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+    BASIC_FONT = pygame.font.Font('freesansbold.ttf', BASIC_FONT_SIZE)
     pygame.display.set_caption('Blackjack')
+    pygame.display.update()
+    FPS_CLOCK.tick(FPS)
+
     game_ended = False
 
+
+    def terminate():
+        pygame.quit()
+        sys.exit()
+
     while game_ended == False:
+        pygame.display.update()
+        FPS_CLOCK.tick(FPS)
+
+        for event in pygame.event.get():
+            if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
+                terminate()
 
         player_hand = []
         dealer_hand = []
@@ -196,32 +238,38 @@ def main():
 
         round_running = True
 
-        print("hra zacala")
+        draw_image(DISPLAY_SURFACE, './img/Other/Background.png', 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT)
 
-        bet = int(input(f'balance: {balance} | place your bet: '))
-        print(player_hand)
-        balance -= bet
-        while round_running:
-            decision = input('')
-            if 'hit' == decision:
-                hit(player_hand, cards)
-                print (player_hand)
+        display_card(DISPLAY_SURFACE, 'KC', 0, 0)
+        display_card(DISPLAY_SURFACE, 'KH', 50, 50)
+        display_card(DISPLAY_SURFACE, 'KD', 100, 100)
 
-            if 'double' == decision:
-                balance -= bet
-                bet += bet
-                hit(player_hand, cards)
-                print (player_hand)
-                print(round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet))
+        # print("hra zacala")
+
+        # bet = int(input(f'balance: {balance} | place your bet: '))
+        # print(player_hand)
+        # balance -= bet
+        # while round_running:
+        #     decision = input('')
+        #     if 'hit' == decision:
+        #         hit(player_hand, cards)
+        #         print (player_hand)
+
+        #     if 'double' == decision:
+        #         balance -= bet
+        #         bet += bet
+        #         hit(player_hand, cards)
+        #         print (player_hand)
+        #         print(round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet))
 
             
-            if 'pass' == decision:
-                print(round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet))
+        #     if 'pass' == decision:
+        #         print(round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet))
 
-            if calculate_value_of_cards(player_hand) > 21:
-                print(round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet))
+        #     if calculate_value_of_cards(player_hand) > 21:
+        #         print(round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet))
 
-    cards = shuffle_cards()
-    [player_hand, dealer_hand, cards] = start_round(cards, player_hand, dealer_hand)
+    # cards = shuffle_cards()
+    # [player_hand, dealer_hand, cards] = start_round(cards, player_hand, dealer_hand)
 
 main()
