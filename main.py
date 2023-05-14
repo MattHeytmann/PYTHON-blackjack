@@ -2,9 +2,9 @@ import pygame, sys, random
 from pygame.locals import *
 
 TILE_SIZE = 80
-WINDOW_WIDTH = 640
-WINDOW_HEIGHT = 480
-FPS = 2
+WINDOW_WIDTH = 1600
+WINDOW_HEIGHT = 900
+FPS = 30
 BASIC_FONT_SIZE = 20
 CARD_SIZE = 100
 BLANK = None
@@ -76,6 +76,19 @@ all_cards = [
     'ad',
 ]
 
+class Button:
+    def __init__(self, image_path, x, y, width, height):
+        self.image_path = image_path
+        self.rect = pygame.Rect(x, y, width, height)
+        self.handled = False
+
+    def handle_event(self):
+        if pygame.mouse.get_pressed()[0] and not self.handled:
+            mouse_position = pygame.mouse.get_pos()
+            if self.rect.collidepoint(mouse_position):
+                print("Button clicked:", self.image_path)
+        self.handled = pygame.mouse.get_pressed()[0]
+
 def add_extra_card(deck):
     last_third_of_deck = deck[-15:-10]
     last_third_of_deck += ['XX']
@@ -84,7 +97,6 @@ def draw_image(screen, image, x, y, img_width, img_height):
     image = pygame.image.load(f"{image}")
     image = pygame.transform.scale(image, (img_width, img_height))
     screen.blit(image, (x, y))
-    pygame.display.update()
 
 def display_card(screen, card, x, y):
     global CARD_SIZE
@@ -102,6 +114,10 @@ def display_card(screen, card, x, y):
         draw_image(screen, path + 'Spades/' + card + '.png', x, y, CARD_SIZE * 0.7, CARD_SIZE )
     else:
         pass
+
+def display_text(font, text, x, y):
+    text_surface = font.render(text, True, (0, 0, 0))
+    DISPLAY_SURFACE.blit(text_surface, (x, y))
 
 def players_cards(cards):
     player_hand.append(cards[:2])
@@ -216,7 +232,7 @@ def main():
     FPS_CLOCK.tick(FPS)
 
     game_ended = False
-
+    handled = False
 
     def terminate():
         pygame.quit()
@@ -226,9 +242,17 @@ def main():
         pygame.display.update()
         FPS_CLOCK.tick(FPS)
 
+        button_double = Button('./img/Other/Double.png', (WINDOW_WIDTH // 2) - 68, WINDOW_HEIGHT - 150, 130, 130)
+        button_hit = Button('./img/Other/hit.png', (WINDOW_WIDTH // 2) - 283, WINDOW_HEIGHT - 78, 203, 77)
+        button_stand = Button('./img/Other/stand.png', (WINDOW_WIDTH / 2) + 80, WINDOW_HEIGHT - 78, 203, 77)
+
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 terminate()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                button_double.handle_event()
+                button_hit.handle_event()
+                button_stand.handle_event()
 
         player_hand = []
         dealer_hand = []
@@ -239,10 +263,25 @@ def main():
         round_running = True
 
         draw_image(DISPLAY_SURFACE, './img/Other/Background.png', 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT)
+        draw_image(DISPLAY_SURFACE, './img/Other/Bar.png', 0, WINDOW_HEIGHT - 220, WINDOW_WIDTH, 220)
 
+        draw_image(DISPLAY_SURFACE, './img/Other/elipse.png', WINDOW_WIDTH - 50, WINDOW_HEIGHT - 220, 50, 50)
+        draw_image(DISPLAY_SURFACE, './img/Other/elipse.png', 0, WINDOW_HEIGHT - 220, WINDOW_WIDTH, 220)
+        draw_image(DISPLAY_SURFACE, './img/Other/elipse.png', 0, WINDOW_HEIGHT - 220, WINDOW_WIDTH, 220)
+        draw_image(DISPLAY_SURFACE, './img/Other/elipse.png', 0, WINDOW_HEIGHT - 220, WINDOW_WIDTH, 220)
+        draw_image(DISPLAY_SURFACE, './img/Other/elipse.png', 0, WINDOW_HEIGHT - 220, WINDOW_WIDTH, 220)
+        draw_image(DISPLAY_SURFACE, './img/Other/elipse.png', 0, WINDOW_HEIGHT - 220, WINDOW_WIDTH, 220)
+
+        draw_image(DISPLAY_SURFACE, button_double.image_path, button_double.rect.x, button_double.rect.y, button_double.rect.width, button_double.rect.height)
+        draw_image(DISPLAY_SURFACE, button_hit.image_path, button_hit.rect.x, button_hit.rect.y, button_hit.rect.width, button_hit.rect.height)
+        draw_image(DISPLAY_SURFACE, button_stand.image_path, button_stand.rect.x, button_stand.rect.y, button_stand.rect.width, button_stand.rect.height)
+        
         display_card(DISPLAY_SURFACE, 'KC', 0, 0)
         display_card(DISPLAY_SURFACE, 'KH', 50, 50)
         display_card(DISPLAY_SURFACE, 'KD', 100, 100)
+
+        display_text(BASIC_FONT, 'Balence: ' + str(balance), 50, WINDOW_HEIGHT - 38)
+        display_text(BASIC_FONT, 'Bet:' + str(bet), WINDOW_WIDTH - 280, WINDOW_HEIGHT - 38)
 
         # print("hra zacala")
 
