@@ -77,16 +77,17 @@ all_cards = [
 ]
 
 class Button:
-    def __init__(self, image_path, x, y, width, height):
+    def __init__(self, image_path, x, y, width, height, do_function):
         self.image_path = image_path
         self.rect = pygame.Rect(x, y, width, height)
         self.handled = False
+        self.do_function = do_function
 
     def handle_event(self):
         if pygame.mouse.get_pressed()[0] and not self.handled:
             mouse_position = pygame.mouse.get_pos()
             if self.rect.collidepoint(mouse_position):
-                print("Button clicked:", self.image_path)
+                return self.do_function()
         self.handled = pygame.mouse.get_pressed()[0]
 
 def add_extra_card(deck):
@@ -238,13 +239,53 @@ def main():
         pygame.quit()
         sys.exit()
 
+    bet = 0
+
     while game_ended == False:
         pygame.display.update()
         FPS_CLOCK.tick(FPS)
 
-        button_double = Button('./img/Other/Double.png', (WINDOW_WIDTH // 2) - 68, WINDOW_HEIGHT - 150, 130, 130)
-        button_hit = Button('./img/Other/hit.png', (WINDOW_WIDTH // 2) - 283, WINDOW_HEIGHT - 78, 203, 77)
-        button_stand = Button('./img/Other/stand.png', (WINDOW_WIDTH / 2) + 80, WINDOW_HEIGHT - 78, 203, 77)
+        def double():
+            print('double')
+        def hit():
+            print('hit')
+        def stand():
+            print('stand')
+        def btn_chip_10():
+            global balance
+            balance -= 10
+            return 10
+        def btn_chip_20():
+            global balance
+            balance -= 20
+            return 20
+        def btn_chip_50():
+            global balance
+            balance -= 50
+            return 50
+        def btn_chip_100():
+            global balance
+            balance -= 100
+            return 100
+        def btn_chip_200():
+            global balance
+            balance -= 200
+            return 200
+        def btn_chip_500():
+            global balance
+            balance -= 500
+            return 500
+
+        button_double = Button('./img/Other/Double.png', (WINDOW_WIDTH // 2) - 68, WINDOW_HEIGHT - 150, 130, 130, double)
+        button_hit = Button('./img/Other/hit.png', (WINDOW_WIDTH // 2) - 283, WINDOW_HEIGHT - 78, 203, 77, hit)
+        button_stand = Button('./img/Other/stand.png', (WINDOW_WIDTH / 2) + 80, WINDOW_HEIGHT - 78, 203, 77, stand)
+
+        button_chip_10 = Button('./img/Other/10.png', WINDOW_WIDTH - 270, WINDOW_HEIGHT - 200, 110, 110, btn_chip_10)
+        button_chip_20 = Button('./img/Other/20.png', WINDOW_WIDTH - 150, WINDOW_HEIGHT - 200, 110, 110, btn_chip_20)
+        button_chip_50 = Button('./img/Other/50.png', WINDOW_WIDTH - 270, WINDOW_HEIGHT - 320, 110, 110, btn_chip_50)
+        button_chip_100 = Button('./img/Other/100.png', WINDOW_WIDTH - 150, WINDOW_HEIGHT - 320, 110, 110, btn_chip_100)
+        button_chip_200 = Button('./img/Other/200.png', WINDOW_WIDTH - 270, WINDOW_HEIGHT - 440, 110, 110, btn_chip_200)
+        button_chip_500 = Button('./img/Other/500.png', WINDOW_WIDTH - 150, WINDOW_HEIGHT - 440, 110, 110, btn_chip_500)
 
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
@@ -253,10 +294,39 @@ def main():
                 button_double.handle_event()
                 button_hit.handle_event()
                 button_stand.handle_event()
+                try:
+                    if balance - 10 >= 0:
+                        bet += button_chip_10.handle_event()
+                except (UnboundLocalError, TypeError):
+                    pass
+                try:
+                    if balance - 20 >= 0:
+                        bet += button_chip_20.handle_event()
+                except (UnboundLocalError, TypeError):
+                    pass
+                try:
+                    if balance - 50 >= 0:
+                        bet += button_chip_50.handle_event()
+                except (UnboundLocalError, TypeError):
+                    pass
+                try:
+                    if balance - 100 >= 0:
+                        bet += button_chip_100.handle_event()
+                except (UnboundLocalError, TypeError):
+                    pass
+                try:
+                    if balance - 200 >= 0:
+                        bet += button_chip_200.handle_event()
+                except (UnboundLocalError, TypeError):
+                    pass
+                try:
+                    if balance - 500 >= 0:
+                        bet += button_chip_500.handle_event()
+                except (UnboundLocalError, TypeError):
+                    pass
 
         player_hand = []
         dealer_hand = []
-        bet = 0
         cards = shuffle_cards(all_cards.copy())
         [cards, player_hand, dealer_hand] = start_round(cards, player_hand, dealer_hand)
 
@@ -265,23 +335,19 @@ def main():
         draw_image(DISPLAY_SURFACE, './img/Other/Background.png', 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT)
         draw_image(DISPLAY_SURFACE, './img/Other/Bar.png', 0, WINDOW_HEIGHT - 220, WINDOW_WIDTH, 220)
 
-        draw_image(DISPLAY_SURFACE, './img/Other/elipse.png', WINDOW_WIDTH - 50, WINDOW_HEIGHT - 220, 50, 50)
-        draw_image(DISPLAY_SURFACE, './img/Other/elipse.png', 0, WINDOW_HEIGHT - 220, WINDOW_WIDTH, 220)
-        draw_image(DISPLAY_SURFACE, './img/Other/elipse.png', 0, WINDOW_HEIGHT - 220, WINDOW_WIDTH, 220)
-        draw_image(DISPLAY_SURFACE, './img/Other/elipse.png', 0, WINDOW_HEIGHT - 220, WINDOW_WIDTH, 220)
-        draw_image(DISPLAY_SURFACE, './img/Other/elipse.png', 0, WINDOW_HEIGHT - 220, WINDOW_WIDTH, 220)
-        draw_image(DISPLAY_SURFACE, './img/Other/elipse.png', 0, WINDOW_HEIGHT - 220, WINDOW_WIDTH, 220)
-
         draw_image(DISPLAY_SURFACE, button_double.image_path, button_double.rect.x, button_double.rect.y, button_double.rect.width, button_double.rect.height)
         draw_image(DISPLAY_SURFACE, button_hit.image_path, button_hit.rect.x, button_hit.rect.y, button_hit.rect.width, button_hit.rect.height)
         draw_image(DISPLAY_SURFACE, button_stand.image_path, button_stand.rect.x, button_stand.rect.y, button_stand.rect.width, button_stand.rect.height)
+        draw_image(DISPLAY_SURFACE, button_chip_10.image_path, button_chip_10.rect.x, button_chip_10.rect.y, button_chip_10.rect.width, button_chip_10.rect.height)
+        draw_image(DISPLAY_SURFACE, button_chip_20.image_path, button_chip_20.rect.x, button_chip_20.rect.y, button_chip_20.rect.width, button_chip_20.rect.height)
+        draw_image(DISPLAY_SURFACE, button_chip_50.image_path, button_chip_50.rect.x, button_chip_50.rect.y, button_chip_50.rect.width, button_chip_50.rect.height)
+        draw_image(DISPLAY_SURFACE, button_chip_100.image_path, button_chip_100.rect.x, button_chip_100.rect.y, button_chip_100.rect.width, button_chip_100.rect.height)
+        draw_image(DISPLAY_SURFACE, button_chip_200.image_path, button_chip_200.rect.x, button_chip_200.rect.y, button_chip_200.rect.width, button_chip_200.rect.height)
+        draw_image(DISPLAY_SURFACE, button_chip_500.image_path, button_chip_500.rect.x, button_chip_500.rect.y, button_chip_500.rect.width, button_chip_500.rect.height)
         
-        display_card(DISPLAY_SURFACE, 'KC', 0, 0)
-        display_card(DISPLAY_SURFACE, 'KH', 50, 50)
-        display_card(DISPLAY_SURFACE, 'KD', 100, 100)
 
-        display_text(BASIC_FONT, 'Balence: ' + str(balance), 50, WINDOW_HEIGHT - 38)
-        display_text(BASIC_FONT, 'Bet:' + str(bet), WINDOW_WIDTH - 280, WINDOW_HEIGHT - 38)
+        display_text(BASIC_FONT, 'Balance: ' + str(balance) + '€', 50, WINDOW_HEIGHT - 38)
+        display_text(BASIC_FONT, 'Bet:' + str(bet) + '€', WINDOW_WIDTH - 280, WINDOW_HEIGHT - 38)
 
         # print("hra zacala")
 
@@ -289,24 +355,27 @@ def main():
         # print(player_hand)
         # balance -= bet
         # while round_running:
-        #     decision = input('')
-        #     if 'hit' == decision:
-        #         hit(player_hand, cards)
-        #         print (player_hand)
 
-        #     if 'double' == decision:
-        #         balance -= bet
-        #         bet += bet
-        #         hit(player_hand, cards)
-        #         print (player_hand)
-        #         print(round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet))
 
             
-        #     if 'pass' == decision:
-        #         print(round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet))
+    #         decision = input('')
+    #         if 'hit' == decision:
+    #             hit(player_hand, cards)
+    #             print (player_hand)
 
-        #     if calculate_value_of_cards(player_hand) > 21:
-        #         print(round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet))
+    #         if 'double' == decision:
+    #             balance -= bet
+    #             bet += bet
+    #             hit(player_hand, cards)
+    #             print (player_hand)
+    #             print(round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet))
+
+            
+    #         if 'pass' == decision:
+    #             print(round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet))
+
+    #         if calculate_value_of_cards(player_hand) > 21:
+    #             print(round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet))
 
     # cards = shuffle_cards()
     # [player_hand, dealer_hand, cards] = start_round(cards, player_hand, dealer_hand)
