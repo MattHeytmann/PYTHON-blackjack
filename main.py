@@ -349,8 +349,7 @@ def main():
                 button_double = Button('./img/Other/Double.png', (WINDOW_WIDTH // 2) - 68, WINDOW_HEIGHT - 150, 130, 130, btn_double)
                 button_hit = Button('./img/Other/hit.png', (WINDOW_WIDTH // 2) - 283, WINDOW_HEIGHT - 78, 203, 77, btn_hit)
                 button_stand = Button('./img/Other/stand.png', (WINDOW_WIDTH / 2) + 80, WINDOW_HEIGHT - 78, 203, 77, btn_stand)
-                # Display player's current hand and dealer's face-up card
-                # Prompt the player to choose an action (hit or stand)
+
                 for event in pygame.event.get():
                     if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                         terminate()
@@ -365,12 +364,7 @@ def main():
                                 hit(player_hand, cards)
                             if button_stand.handle_event():
                                 round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet)
-                            # Check if the hit button was clicked
-                            # If yes, call the hit function to add a card to the player's hand
-                            # Check if the stand button was clicked
-                            # If yes, end the player's turn
 
-                # Update the display and wait for the next event
                 for i, card in enumerate(dealer_hand):
                     card = card.upper()
                     display_card(DISPLAY_SURFACE, card, 427.01, 61.77)
@@ -399,13 +393,11 @@ def main():
 
                 
                 button_exit = Button(f'./img/Other/{round_over(calculate_value_of_cards(player_hand), dealer_hand, cards, bet)}.png', 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, btn_double)
-                # Display player's current hand and dealer's face-up card
-                # Prompt the player to choose an action (hit or stand)
                 for event in pygame.event.get():
                     if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                         terminate()
                     if event.type == pygame.MOUSEBUTTONDOWN:
-                        if event.button == 1:  # Check if the left mouse button was clicked
+                        if event.button == 1:
                             if button_exit.handle_event():
                                 btn_exit = False
 
